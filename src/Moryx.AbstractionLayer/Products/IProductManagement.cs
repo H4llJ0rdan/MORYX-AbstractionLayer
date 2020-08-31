@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Moryx.AbstractionLayer.Identity;
 using Moryx.AbstractionLayer.Recipes;
 using Moryx.Workflows;
 
@@ -87,6 +89,18 @@ namespace Moryx.AbstractionLayer.Products
         ProductInstance GetInstance(long id);
 
         /// <summary>
+        /// Get a product instance by identity
+        /// </summary>
+        TInstance GetInstance<TInstance>(IIdentity identity)
+            where TInstance : ProductInstance;
+
+        /// <summary>
+        /// Get product instance by expression
+        /// </summary>
+        TInstance GetInstance<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
+
+        /// <summary>
         /// Updates the database from the product instance
         /// </summary>
         void SaveInstance(ProductInstance productInstance);
@@ -97,13 +111,9 @@ namespace Moryx.AbstractionLayer.Products
         void SaveInstances(ProductInstance[] productInstances);
 
         /// <summary>
-        /// Gets a list of product instances by a given state
+        /// Get all instances that match a certain 
         /// </summary>
-        IEnumerable<ProductInstance> GetInstances(ProductInstanceState state);
-
-        /// <summary>
-        /// Load product instances using combined bit flags
-        /// </summary>
-        IEnumerable<ProductInstance> GetInstances(int combinedState);
+        IEnumerable<TInstance> GetInstances<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
     }
 }

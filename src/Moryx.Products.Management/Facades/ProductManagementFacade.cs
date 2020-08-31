@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Moryx.AbstractionLayer;
+using Moryx.AbstractionLayer.Identity;
 using Moryx.AbstractionLayer.Products;
 using Moryx.AbstractionLayer.Recipes;
 using Moryx.Runtime.Modules;
@@ -169,6 +171,18 @@ namespace Moryx.Products.Management
             return ProductManager.GetInstance(id);
         }
 
+        public TInstance GetInstance<TInstance>(IIdentity identity) where TInstance : ProductInstance
+        {
+            ValidateHealthState();
+            return ProductManager.GetInstance<TInstance>(identity);
+        }
+
+        public TInstance GetInstance<TInstance>(Expression<Predicate<TInstance>> selector) where TInstance : ProductInstance
+        {
+            ValidateHealthState();
+            return ProductManager.GetInstance<TInstance>(selector);
+        }
+
         public void SaveInstance(ProductInstance productInstance)
         {
             ValidateHealthState();
@@ -181,16 +195,10 @@ namespace Moryx.Products.Management
             ProductManager.SaveInstances(productInstance);
         }
 
-        public IEnumerable<ProductInstance> GetInstances(ProductInstanceState state)
+        public IEnumerable<TInstance> GetInstances<TInstance>(Expression<Predicate<TInstance>> selector) where TInstance : ProductInstance
         {
             ValidateHealthState();
-            return ProductManager.GetInstances(state);
-        }
-
-        public IEnumerable<ProductInstance> GetInstances(int state)
-        {
-            ValidateHealthState();
-            return ProductManager.GetInstances(state);
+            return ProductManager.GetInstances<TInstance>(selector);
         }
 
         private static void ValidateRecipe(IProductRecipe recipe)

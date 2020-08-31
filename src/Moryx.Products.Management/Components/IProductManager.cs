@@ -3,7 +3,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using Moryx.AbstractionLayer;
+using Moryx.AbstractionLayer.Identity;
 using Moryx.AbstractionLayer.Products;
 using Moryx.Modules;
 using Moryx.Products.Management.Importers;
@@ -83,18 +85,26 @@ namespace Moryx.Products.Management
         ProductInstance GetInstance(long id);
 
         /// <summary>
-        /// Gets a list of instances by a given state
+        /// Get a product instance by identity
         /// </summary>
-        IEnumerable<ProductInstance> GetInstances(ProductInstanceState state);
+        TInstance GetInstance<TInstance>(IIdentity identity)
+            where TInstance : ProductInstance;
 
         /// <summary>
-        /// Load instances using combined bit flags
+        /// Get product instance by expression
         /// </summary>
-        IEnumerable<ProductInstance> GetInstances(int state);
+        TInstance GetInstance<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
 
         /// <summary>
         /// Updates the database from the instance
         /// </summary>
         void SaveInstances(params ProductInstance[] productInstances);
+
+        /// <summary>
+        /// Get all instances that match a certain 
+        /// </summary>
+        IEnumerable<TInstance> GetInstances<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
     }
 }

@@ -4,7 +4,9 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Moryx.AbstractionLayer;
+using Moryx.AbstractionLayer.Identity;
 using Moryx.AbstractionLayer.Products;
 using Moryx.AbstractionLayer.Recipes;
 using Moryx.Container;
@@ -182,14 +184,19 @@ namespace Moryx.Products.Management
             return Storage.LoadInstance(id);
         }
 
-        public IEnumerable<ProductInstance> GetInstances(ProductInstanceState state)
+        public TInstance GetInstance<TInstance>(IIdentity identity) where TInstance : ProductInstance
         {
-            return Storage.LoadInstances((int)state);
+            return Storage.LoadInstance<TInstance>(identity);
+        }
+        
+        public TInstance GetInstance<TInstance>(Expression<Predicate<TInstance>> selector) where TInstance : ProductInstance
+        {
+            return Storage.LoadInstance(selector);
         }
 
-        public IEnumerable<ProductInstance> GetInstances(int state)
+        public IEnumerable<TInstance> GetInstances<TInstance>(Expression<Predicate<TInstance>> selector) where TInstance : ProductInstance
         {
-            return Storage.LoadInstances(state);
+            return Storage.LoadInstances(selector);
         }
 
         private void RaiseProductChanged(IProductType productType)

@@ -1,7 +1,10 @@
 // Copyright (c) 2020, Phoenix Contact GmbH & Co. KG
 // Licensed under the Apache License, Version 2.0
 
+using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using Moryx.AbstractionLayer.Identity;
 using Moryx.AbstractionLayer.Products;
 using Moryx.AbstractionLayer.Recipes;
 using Moryx.Model.Repositories;
@@ -31,11 +34,6 @@ namespace Moryx.Products.Management
         IProductType LoadType(ProductIdentity identity);
 
         /// <summary>
-        /// Transform a given a type entity
-        /// </summary>
-        IProductType TransformType(IUnitOfWork context, ProductTypeEntity typeEntity, bool full);
-
-        /// <summary>
         /// Save a type to the storage
         /// </summary>
         long SaveType(IProductType modifiedInstance);
@@ -48,9 +46,22 @@ namespace Moryx.Products.Management
         ProductInstance LoadInstance(long id);
 
         /// <summary>
+        /// Get a product instance by identity
+        /// </summary>
+        TInstance LoadInstance<TInstance>(IIdentity identity)
+            where TInstance : ProductInstance;
+
+        /// <summary>
+        /// Get product instance by expression
+        /// </summary>
+        TInstance LoadInstance<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
+
+        /// <summary>
         /// Load instances using combined bit flags
         /// </summary>
-        IEnumerable<ProductInstance> LoadInstances(int state);
+        IEnumerable<TInstance> LoadInstances<TInstance>(Expression<Predicate<TInstance>> selector)
+            where TInstance : ProductInstance;
 
         /// <summary>
         /// Updates the database from the instance
